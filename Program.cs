@@ -1,4 +1,5 @@
-﻿using AdventOfCode.Days;
+﻿using System;
+using AdventOfCode.Days;
 
 namespace AdventOfCode2020
 {
@@ -6,8 +7,10 @@ namespace AdventOfCode2020
     {
         static void Main(string[] args)
         {
-            Day1.Problem1();
-            Day1.Problem2();
+            //Day1.Problem1();
+            //Day1.Problem2();
+
+            Console.WriteLine($"Valid Passwords: {Day2.Problem1()}");
         }
     }
 }
