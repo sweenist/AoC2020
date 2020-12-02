@@ -1,4 +1,6 @@
-﻿namespace AdventOfCode2020
+﻿using AdventOfCode.Days;
+
+namespace AdventOfCode2020
 {
     class Program
     {
