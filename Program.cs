@@ -10,7 +10,9 @@ namespace AdventOfCode2020
             //Day1.Problem1();
             //Day1.Problem2();
 
-            Console.WriteLine($"Valid Passwords: {Day2.Problem1()}");
+            Console.WriteLine($"Part 1 Valid Passwords: {Day2.Problem1()}");
+            Console.WriteLine($"Part 2 Valid Passwords: {Day2.Problem2()}");
+            Day2.TestProblem2();
         }
     }
 }
