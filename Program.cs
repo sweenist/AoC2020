@@ -1,5 +1,6 @@
 ﻿using System;
 using AdventOfCode.Days;
+using AdventOfCode.Utils;
 
 namespace AdventOfCode2020
 {
@@ -7,9 +8,8 @@ namespace AdventOfCode2020
     {
         static void Main(string[] args)
         {
-
-            Console.WriteLine($"Valid Passports: {Day4.Problem1()}");
-            Console.WriteLine($"Valid Passports: {Day4.Problem2()}");
+            Console.WriteLine($"Highest Boarding Pass Value is {Day5.Problem1(test: false)}");
+            Console.WriteLine($"Your seat is {Day5.Problem2()}");
         }
     }
 }
