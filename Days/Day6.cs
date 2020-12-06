@@ -36,13 +36,37 @@ b";
             return result;
         }
 
+        public static int Problem2()
+        {
+            var result = Process2(_sampleInput);
+            result.Should().Be(6);
+
+            result = Process2(_input);
+
+            return result;
+        }
+
         private static int Process(string input)
         {
             var groups = input.Split(Environment.NewLine.Repeat(2));
-            Console.WriteLine($"There are {groups.Count()} groups.");
             return groups.Select(g => g.Replace(Environment.NewLine, string.Empty))
                   .Select(s => new HashSet<char>(s.GetEnumerator().Enumerate()))
                   .Sum(h => h.Count());
+        }
+
+        private static int Process2(string input)
+        {
+            var result = 0;
+            foreach(var group in input.Split(Environment.NewLine.Repeat(2)))
+            {
+                var responses = group.Split(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries);
+                result += string.Concat(responses)
+                                .GroupBy(c => c)
+                                .Where(c => c.Count().Equals(responses.Length))
+                                .Count();
+            }
+                  
+            return result;
         }
     }
 }
