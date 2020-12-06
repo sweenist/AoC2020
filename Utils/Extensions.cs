@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AdventOfCode.Utils
 {
@@ -19,6 +20,24 @@ namespace AdventOfCode.Utils
         public static bool Includes(this int value, int min, int max)
         {
             return min <= value && value <= max;
+        }
+
+        public static string Repeat(this string value, int repeatCount)
+        {
+            return String.Concat(Enumerable.Repeat(value, repeatCount));
+        }
+
+        public static string Repeat(this char value, int repeatCount)
+        {
+            return String.Concat(Enumerable.Repeat(value, repeatCount));
+        }
+
+        public static IEnumerable<T> Enumerate<T>(this IEnumerator<T> source)
+        {
+            while(source.MoveNext())
+            {
+                yield return source.Current;
+            }
         }
     }
 }
