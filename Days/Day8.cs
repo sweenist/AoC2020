@@ -135,7 +135,7 @@ namespace AdventOfCode.Days
                     GetValueBeforeLoop();
                     index++;
                 }
-                Console.WriteLine($"Instruction on line {index+1} changed.")
+                Console.WriteLine($"Instruction on line {instructionIndicies[index - 1] + 1} changed.");
                 return _accumulatedValue;
             }
 
