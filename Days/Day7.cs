@@ -13,6 +13,11 @@ namespace AdventOfCode.Days
         private static Type _classType = typeof(Day7);
         public static void Run()
         {
+            // Problem1();
+        }
+
+        private static void Problem1()
+        {
             var sampleResult = ProcessBags(LoadSample(_classType)).ProcessInteriorBags()
                                                                   .FindContainers(_bagColor)
                                                                   .Count();
@@ -53,13 +58,13 @@ namespace AdventOfCode.Days
 
         private static IEnumerable<string> FindContainers(this IEnumerable<Luggage> source, string bagColor)
         {
-            var collection = source.Where(s => s.Contains(bagColor))
+            var collection = source.Where(s => s.ContainedBags.ContainsKey(bagColor))
                                    .Select(b => b.Color)
                                    .ToHashSet();
 
-            foreach(var parent in collection.Select(c => source.FindContainers(c)).ToList())
+            foreach (var container in collection.Select(c => source.FindContainers(c)).ToList())
             {
-                collection.UnionWith(parent);
+                collection.UnionWith(container);
             }
 
             return collection;
@@ -77,9 +82,9 @@ namespace AdventOfCode.Days
             }
 
             public string Color { get; }
-            public Dictionary<Luggage, int> ContainedBags { get; } = new Dictionary<Luggage, int>();
+            public Dictionary<string, int> ContainedBags { get; } = new Dictionary<string, int>();
 
-            public bool Contains(string color) => ContainedBags.Keys.Any(k => k.Color.Equals(color) || k.Contains(color));
+            public bool Contains(string color) => ContainedBags.ContainsKey(color);
 
             public void ProcessLuggage(IList<Luggage> allBags)
             {
@@ -89,7 +94,7 @@ namespace AdventOfCode.Days
                     if (match.Success)
                     {
                         var luggage = allBags.Single(b => b.Color.Equals(match.Groups["color"].Value));
-                        ContainedBags.Add(luggage, Convert.ToInt32(match.Groups["quantity"].Value));
+                        ContainedBags.Add(luggage.Color, Convert.ToInt32(match.Groups["quantity"].Value));
                     }
                 }
             }
