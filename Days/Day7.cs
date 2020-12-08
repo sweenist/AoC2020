@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.RegularExpressions;
+using FluentAssertions;
 using static AdventOfCode.Utils.Extensions;
 
 namespace AdventOfCode.Days
@@ -14,6 +15,7 @@ namespace AdventOfCode.Days
         public static void Run()
         {
             // Problem1();
+            Problem2();
         }
 
         private static void Problem1()
@@ -28,6 +30,17 @@ namespace AdventOfCode.Days
                                                            .Count();
 
             Console.WriteLine($"There are {result} unique bags that can hold {_bagColor}");
+        }
+
+        private static void Problem2()
+        {
+            var sampleResult = ProcessBags(LoadSample(_classType)).ProcessInteriorBags();
+            var tally = TallyBagTotals(sampleResult, _bagColor);
+            tally.Should().Be(32);
+
+            var result = ProcessBags(LoadInput(_classType)).ProcessInteriorBags();
+            tally = ElapsedAction(() => TallyBagTotals(result, _bagColor));
+            Console.WriteLine($"Shiny bags contain {tally} bags");
         }
 
         private static IEnumerable<Luggage> ProcessBags(string input)
@@ -68,6 +81,17 @@ namespace AdventOfCode.Days
             }
 
             return collection;
+        }
+
+        private static int TallyBagTotals(IEnumerable<Luggage> bags, string bagColor)
+        {            
+            var bag = bags.Single(b => b.Color.Equals(bagColor));
+            var result = bag.ContainedBags.Sum(b => b.Value);
+            foreach(var subBag in bag.ContainedBags.Keys)
+            {
+                result += bag.ContainedBags[subBag] * TallyBagTotals(bags, subBag);
+            }
+            return result;
         }
 
         private class Luggage
