@@ -65,8 +65,6 @@ namespace AdventOfCode.Days
 
         private class InstructionSet
         {
-
-
             private int _accumulatedValue;
             private int _instructionIndex;
 
@@ -137,6 +135,7 @@ namespace AdventOfCode.Days
                     GetValueBeforeLoop();
                     index++;
                 }
+                Console.WriteLine($"Instruction on line {index+1} changed.")
                 return _accumulatedValue;
             }
 
