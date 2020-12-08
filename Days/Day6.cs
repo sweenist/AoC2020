@@ -25,7 +25,7 @@ a
 
 b";
 
-        private static string _input = File.ReadAllText(@"Days\Inputs\Day6.txt");
+        private static string _input = Extensions.LoadInput(typeof(Day6));
         public static int Problem1()
         {
             var result = Process(_sampleInput);

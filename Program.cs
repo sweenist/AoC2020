@@ -1,5 +1,4 @@
-﻿using System;
-using AdventOfCode.Days;
+﻿using AdventOfCode.Days;
 
 namespace AdventOfCode2020
 {
@@ -7,8 +6,7 @@ namespace AdventOfCode2020
     {
         static void Main(string[] args)
         {
-            Console.WriteLine($"Total Yeses: {Day6.Problem1()}");
-            Console.WriteLine($"Group Unanimous Yeses: {Day6.Problem2()}");
+            Day7.Run();
         }
     }
 }
