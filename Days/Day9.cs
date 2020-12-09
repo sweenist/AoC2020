@@ -9,8 +9,8 @@ namespace AdventOfCode.Days
     public static class Day9
     {
         private static Type _classType = typeof(Day9);
-        private static IEnumerable<int> _sampleInput = LoadSample(_classType).ToLines().Select(s => Convert.ToInt32(s));
-        private static IEnumerable<int> _input = LoadInput(_classType).ToLines().Select(s => Convert.ToInt32(s));
+        private static IEnumerable<long> _sampleInput = LoadSample(_classType).ToLines().Select(s => Convert.ToInt64(s));
+        private static IEnumerable<long> _input = LoadInput(_classType).ToLines().Select(s => Convert.ToInt64(s));
         public static void Run()
         {
             Tests();
@@ -29,8 +29,13 @@ namespace AdventOfCode.Days
 
         private static void Problem2()
         {
-            
+            var result = ProcessPart2(_sampleInput.Take(_sampleInput.ToList().IndexOf(127)), 127);
+            result.Should().Be(62);
+
             var target = 23278925;
+            var input = _input.Take(_input.ToList().IndexOf(target));
+            result = ProcessPart2(input, target);
+            Console.WriteLine($"Exploitation sum is {result}");
         }
 
         private static void Tests()
@@ -45,7 +50,7 @@ namespace AdventOfCode.Days
             set.Skip(5).First().Should().Be(6);
         }
 
-        private static int ProcessPart1(IEnumerable<int> input, int take)
+        private static long ProcessPart1(IEnumerable<long> input, int take)
         {
             var skip = 0;
             var searching = true;
@@ -74,6 +79,28 @@ namespace AdventOfCode.Days
                 }
             }
             throw new IndexOutOfRangeException($"Couldn't find a target sum that did not equal any two numbers in a sample of the previous 5");
+        }
+
+        private static long ProcessPart2(IEnumerable<long> input, int targetSum)
+        {
+            var index = 0;
+
+            while (true)
+            {
+                var list = input.Skip(index);
+                index++;
+                var sum = 0L;
+
+                var consecutiveNumbers = list.TakeWhile(a =>
+                {
+                    sum += a;
+                    return sum < targetSum;
+                }).ToList();
+                if (sum == targetSum)
+                    return consecutiveNumbers.Min() + consecutiveNumbers.Max();
+
+                continue;
+            }
         }
     }
 }
