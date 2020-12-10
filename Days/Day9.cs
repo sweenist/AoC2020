@@ -9,8 +9,8 @@ namespace AdventOfCode.Days
     public static class Day9
     {
         private static Type _classType = typeof(Day9);
-        private static IEnumerable<long> _sampleInput = LoadSample(_classType).ToLines().Select(s => Convert.ToInt64(s));
-        private static IEnumerable<long> _input = LoadInput(_classType).ToLines().Select(s => Convert.ToInt64(s));
+        private static IEnumerable<long> _sampleInput = LoadSample(_classType).ToInt64();
+        private static IEnumerable<long> _input = LoadInput(_classType).ToInt64();
         public static void Run()
         {
             Tests();

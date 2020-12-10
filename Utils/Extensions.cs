@@ -61,6 +61,20 @@ namespace AdventOfCode.Utils
             return source.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
         }
 
+        public static long[] ToInt64(this string source)
+        {
+            if (source.Contains(Environment.NewLine))
+                return source.Split(Environment.NewLine).Select(s => Convert.ToInt64(s)).ToArray();
+            return source.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Select(s => Convert.ToInt64(s)).ToArray();
+        }
+
+        public static int[] ToInt32(this string source)
+        {
+            if (source.Contains(Environment.NewLine))
+                return source.Split(Environment.NewLine).Select(s => Convert.ToInt32(s)).ToArray();
+            return source.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Select(s => Convert.ToInt32(s)).ToArray();
+        }
+
         public static T ElapsedAction<T>(Func<T> action)
         {
             var stopWatch = Stopwatch.StartNew();
