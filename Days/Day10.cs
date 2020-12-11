@@ -9,8 +9,8 @@ namespace AdventOfCode.Days
     public static class Day10
     {
         private static Type _classType = typeof(Day10);
-        private static IEnumerable<int> _sampleInput = LoadSample(_classType).ToInt32();
-        private static IEnumerable<int> _input = LoadInput(_classType).ToInt32();
+        private static readonly IEnumerable<int> _sampleInput = LoadSample(_classType).ToInt32();
+        private static readonly IEnumerable<int> _input = LoadInput(_classType).ToInt32();
         public static void Run()
         {
             Problem1();
@@ -26,7 +26,11 @@ namespace AdventOfCode.Days
 
         private static void Problem2()
         {
+            var result = ProcessTree(_sampleInput);
+            result.Should().Be(19208);
 
+            result = ProcessTree(_input);
+            Console.WriteLine($"There are {result} unique adapter paths.");
         }
 
         private static void Test1()
@@ -51,6 +55,34 @@ namespace AdventOfCode.Days
                            });
 
             return diff1 * diff3;
+        }
+
+
+        private static long ProcessTree(IEnumerable<int> input)
+        {
+            var set = input.Prepend(0)
+                           .OrderBy(_ => _)
+                           .ToList();
+
+            var pathways = new long[set.Count];
+            pathways[0] = 1; //in any given set of paths, there is at least 1 path
+
+            for (var i = 0; i < set.Count; i++)
+            {
+                var current = set[i];
+                var currentPathway = pathways[i];
+
+                for (var j = 1; j <= 3; j++)
+                {
+                    var index = i + j;
+                    if (index >= set.Count || set[index] > current + 3)
+                        break;
+
+                    pathways[index] = pathways[index] + currentPathway;
+                }
+            }
+
+            return pathways.Last();
         }
     }
 }
