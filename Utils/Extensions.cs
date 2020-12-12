@@ -29,6 +29,11 @@ namespace AdventOfCode.Utils
             return 0 <= value && value <= upperBound;
         }
 
+        public static bool None<T>(this IEnumerable<T> source, Func<T, bool> predicate)
+        {
+            return !source.All(predicate);
+        }
+
         public static string Repeat(this string value, int repeatCount)
         {
             return String.Concat(Enumerable.Repeat(value, repeatCount));
