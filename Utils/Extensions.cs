@@ -24,6 +24,11 @@ namespace AdventOfCode.Utils
             return min <= value && value <= max;
         }
 
+        public static bool IsInBounds(this int value, int upperBound)
+        {
+            return 0 <= value && value <= upperBound;
+        }
+
         public static string Repeat(this string value, int repeatCount)
         {
             return String.Concat(Enumerable.Repeat(value, repeatCount));
@@ -57,7 +62,7 @@ namespace AdventOfCode.Utils
         public static string[] ToLines(this string source)
         {
             if (source.Contains(Environment.NewLine))
-                return source.Split(Environment.NewLine);
+                return source.Split(Environment.NewLine, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
             return source.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
         }
 
@@ -73,6 +78,11 @@ namespace AdventOfCode.Utils
             if (source.Contains(Environment.NewLine))
                 return source.Split(Environment.NewLine).Select(s => Convert.ToInt32(s)).ToArray();
             return source.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Select(s => Convert.ToInt32(s)).ToArray();
+        }
+
+        public static IEnumerable<bool> CharToBool(this IEnumerable<char> source, Func<char, bool> isChar)
+        {
+            return source.Select(c => isChar(c));
         }
 
         public static T ElapsedAction<T>(Func<T> action)
