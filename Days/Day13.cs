@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using static AdventOfCode.Utils.Extensions;
@@ -28,12 +27,11 @@ namespace AdventOfCode.Days
         private static void Problem2()
         {
             ElapsedAction(() => Algorithm2(_sampleInput[1])).Should().Be(1068781);
-            // Algorithm2("67,7,59,61").Should().Be(754018);
-            // Algorithm2("17,x,13,19").Should().Be(3417);
+            ElapsedAction(() => Algorithm2("67,7,59,61")).Should().Be(754018);
+            ElapsedAction(() => Algorithm2("17,x,13,19")).Should().Be(3417);
 
             var result = ElapsedAction(() => Algorithm2(_input[1], 591401030L));
             Console.WriteLine($"Consecutive busses at {result}");
-
         }
 
         private static int Algorithm1(string[] lines)
@@ -53,35 +51,23 @@ namespace AdventOfCode.Days
 
         private static long Algorithm2(string line, long seed = 0L)
         {
-            long GetIncrementBaseValue(IEnumerable<BusSchedule> scheds)
-            {
-                var initialValue = scheds.First().Id;
-                var valueAtOffset = scheds.Single(s => s.Offset == initialValue).Id;
-                return (long)(initialValue * valueAtOffset);
-            }
-
-            long Increment(long baseValue, long iter, int firstValue) => (long)(baseValue * iter - firstValue);
             var scheduled = line.Split(',')
                                 .Select((v, i) => new BusSchedule(v, i))
                                 .Where(b => b.Id != -1)
                                 .ToList();
 
-            var incrementor = GetIncrementBaseValue(scheduled);
-            var iteration = seed;
-            var initialValue = scheduled.First().Id;
+            var primarySchedule = scheduled.First();
+            var incrementor = (long)primarySchedule.Id;
+            var timestamp = (long)primarySchedule.Id;
 
-            while (true)
+            foreach(var busSchedule in scheduled.Skip(1))
             {
-                var timestamp = Increment(incrementor, iteration, initialValue);
-                if (scheduled.All(s => s.MatchesOffset(timestamp)))
-                    return timestamp;
-
-                if (timestamp % 100000000 == 0)
-                    Console.WriteLine($"Timespan is {timestamp}. No matches yet.");
-                
-                iteration++;
+                while((timestamp + busSchedule.Offset) % busSchedule.Id != 0)
+                    timestamp = timestamp + incrementor;
+                incrementor = incrementor * busSchedule.Id;
             }
 
+            return timestamp;
         }
 
         private class BusSchedule
