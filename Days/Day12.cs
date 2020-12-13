@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using FluentAssertions;
@@ -38,7 +39,11 @@ namespace AdventOfCode.Days
 
         private static void Problem2()
         {
+            var navSystem = new NavigationSystem(LoadInstructions(_sampleInput));
+            navSystem.Execute().Should().Be(286);
 
+            navSystem = new NavigationSystem(LoadInstructions(_input));
+            Console.WriteLine($"Real Manhattan Distance: {navSystem.Execute()}");
         }
 
         private static IEnumerable<Instruction> LoadInstructions(IEnumerable<string> instructions)
@@ -161,9 +166,109 @@ namespace AdventOfCode.Days
             }
         }
 
+        #endregion
+
+        #region Part 2 classes
+
         private class NavigationSystem
         {
+            private readonly List<Instruction> _navigationInstructions;
+            private readonly WayPoint _wayPoint;
+            private readonly Vessel _vessel;
 
+            public NavigationSystem(IEnumerable<Instruction> instructions)
+            {
+                _navigationInstructions = instructions.ToList();
+                _wayPoint = new WayPoint(new Point(10, 1));
+                _vessel = new Vessel();
+            }
+
+            public int Execute()
+            {
+                foreach (var instruction in _navigationInstructions)
+                {
+                    switch (instruction.Command)
+                    {
+                        case Command.Forward:
+                            _vessel.Move(instruction.Value, _wayPoint.Location);
+                            break;
+                        case Command.Left:
+                        case Command.Right:
+                            _wayPoint.Turn(instruction.Command, instruction.Value);
+                            break;
+                        case Command.Move:
+                            _wayPoint.Move(instruction);
+                            break;
+                    }
+                }
+
+                return _vessel.ManhattanDistance;
+            }
+        }
+
+        private class WayPoint
+        {
+            public WayPoint(Point initialLocation)
+            {
+                Location = initialLocation;
+            }
+
+            public Point Location { get; private set; }
+
+            public void Move(Instruction instruction)
+            {
+                switch (instruction.Direction)
+                {
+                    case Direction.East:
+                        Location = new Point(Location.X + instruction.Value, Location.Y);
+                        break;
+                    case Direction.South:
+                        Location = new Point(Location.X, Location.Y - instruction.Value);
+                        break;
+                    case Direction.West:
+                        Location = new Point(Location.X - instruction.Value, Location.Y);
+                        break;
+                    case Direction.North:
+                        Location = new Point(Location.X, Location.Y + instruction.Value);
+                        break;
+                    default:
+                        throw new ArgumentException($"Direction {instruction.Direction} is not a valid Move direction");
+                }
+            }
+
+            public void Turn(Command direction, int degrees)
+            {
+                switch (direction)
+                {
+                    case Command.Right when degrees.Equals(90):
+                    case Command.Left when degrees.Equals(270):
+                        Location = Location.RotateOrthagonal(1);
+                        break;
+                    case Command.Right when degrees.Equals(270):
+                    case Command.Left when degrees.Equals(90):
+                        Location = Location.RotateOrthagonal(3);
+                        break;
+                    case Command.Right when degrees.Equals(180):
+                    case Command.Left when degrees.Equals(180):
+                        Location = Location.RotateOrthagonal(2);
+                        break;
+                    default:
+                        throw new ArgumentException($"Command {direction} and {degrees} degrees are not valid for orthagonal rotation");
+                }
+            }
+        }
+
+        private class Vessel
+        {
+            private Point _location = new Point();
+
+            public int ManhattanDistance => _location.GetManhattanDistance();
+
+            public void Move(int times, Point wayPointLocation)
+            {
+                _location = new Point(_location.X + wayPointLocation.X * times,
+                                      _location.Y + wayPointLocation.Y * times);
+            }
         }
 
         #endregion
