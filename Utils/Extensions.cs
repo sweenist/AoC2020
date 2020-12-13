@@ -90,12 +90,12 @@ namespace AdventOfCode.Utils
             return source.Select(c => isChar(c));
         }
 
-        public static T ElapsedAction<T>(Func<T> action)
+        public static T ElapsedAction<T>(Func<T> action, string actionString = "Action")
         {
             var stopWatch = Stopwatch.StartNew();
             var result = action();
             stopWatch.Stop();
-            Console.WriteLine($"Action took {stopWatch.Elapsed.ToString(@"hh\:mm\:ss\.fff")}");
+            Console.WriteLine($"{actionString} took {stopWatch.Elapsed.ToString(@"hh\:mm\:ss\.fff")}");
             return result;
         }
     }
