@@ -90,6 +90,16 @@ namespace AdventOfCode.Utils
             return source.Select(c => isChar(c));
         }
 
+        public static void AddOrOverwrite<T1, T2>(this IDictionary<T1, T2> dictionary, T1 key, T2 value)
+        {
+            if (dictionary.ContainsKey(key))
+            {
+                dictionary[key] = value;
+                return;
+            }
+            dictionary.Add(key, value);
+        }
+
         public static T ElapsedAction<T>(Func<T> action, string actionString = "Action")
         {
             var stopWatch = Stopwatch.StartNew();
