@@ -34,6 +34,11 @@ namespace AdventOfCode.Utils
             return !source.All(predicate);
         }
 
+        public static long ToInt64(this int value)
+        {
+            return (long)value;
+        }
+
         public static string Repeat(this string value, int repeatCount)
         {
             return String.Concat(Enumerable.Repeat(value, repeatCount));

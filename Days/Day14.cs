@@ -12,6 +12,10 @@ namespace AdventOfCode.Days
     {
         private static Type _classType = typeof(Day14);
         private static readonly string[] _sampleInput = LoadSample(_classType).ToLines();
+        private static readonly string[] _sample2 = @"mask = 000000000000000000000000000000X1001X
+mem[42] = 100
+mask = 00000000000000000000000000000000X0XX
+mem[26] = 1".ToLines();
         private static readonly string[] _input = LoadInput(_classType).ToLines();
         public static void Run()
         {
@@ -21,18 +25,21 @@ namespace AdventOfCode.Days
 
         private static void Problem1()
         {
-            InitializeMemory(_sampleInput).Should().Be(165);
-            var result = InitializeMemory(_input);
+            InitializeMemory(_sampleInput, false).Should().Be(165);
+            var result = InitializeMemory(_input, includeXMask: false);
             Console.WriteLine($"Total Memory = {result}");
         }
 
         private static void Problem2()
         {
+            InitializeMemory(_sample2, includeXMask: true).Should().Be(208L);
+            var result = InitializeMemory(_input, includeXMask: true);
+            Console.WriteLine($"Total Float Memory = {result}");
         }
 
-        private static long InitializeMemory(string[] input)
+        private static long InitializeMemory(string[] input, bool includeXMask)
         {
-            var memoryInitializer = new MemoryInitializer(input.First());
+            var memoryInitializer = new MemoryInitializer(input.First(), includeXMask);
             var instructions = input.Skip(1)
                                     .Select(ParseInstruction);
             return memoryInitializer.Execute(instructions);
@@ -69,22 +76,25 @@ namespace AdventOfCode.Days
 
         private class MemoryInitializer
         {
-            public MemoryInitializer(string mask)
+            private readonly bool _includeXMask;
+            public MemoryInitializer(string mask, bool includeXMask)
             {
+                _includeXMask = includeXMask;
                 ParseMask(mask.Split('=', StringSplitOptions.TrimEntries).Last());
             }
 
             public Dictionary<int, char> SchemeMask { get; private set; }
 
-            public Dictionary<int, string> Addresses { get; } = new Dictionary<int, string>();
+            public Dictionary<long, string> Addresses { get; } = new Dictionary<long, string>();
 
-            public void ParseMask(string mask)
+            private void ParseMask(string mask)
             {
                 SchemeMask = mask.Select((c, i) => new KeyValuePair<int, char>(i, c))
-                                 .Where(kvp => kvp.Value != 'X')
+                                 .Where(kvp => _includeXMask || kvp.Value != 'X')
                                  .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
             }
-            public void MaskValue(Instruction instruction)
+
+            private void MaskValue(Instruction instruction)
             {
                 var binaryValue = instruction.Value.ToBinary(36).ToArray();
                 foreach (var key in SchemeMask.Keys)
@@ -92,6 +102,31 @@ namespace AdventOfCode.Days
                     binaryValue[key] = SchemeMask[key];
                 }
                 Addresses.AddOrOverwrite(instruction.Address, new string(binaryValue));
+            }
+
+            private void MaskFloatingValue(Instruction instruction)
+            {
+                const int bitDepth = 36;
+
+                var targetValue = instruction.Value.ToBinary(bitDepth);
+                var registryAddress = instruction.Address.ToBinary(bitDepth)
+                                                 .Zip(SchemeMask.Select(s => s.Value),
+                                                 (f, s) => s == '1' ? s : f)
+                                                 .ToArray();
+
+                var targetAddress = ((char[])registryAddress.Clone())
+                                                            .Zip(SchemeMask.Select(kvp => kvp.Value),
+                                                                                  (f, s) => s == 'X' ? '0' : f).ToArray();
+                var indicies = SchemeMask.Where(m => m.Value == 'X').Select(m => m.Key).ToList();
+                var interimBitDepth = indicies.Count;
+
+                for (var i = 0; i < Math.Pow(2, interimBitDepth); ++i)
+                {
+                    var flipflop = i.ToInt64().ToBinary(interimBitDepth);
+                    var _ = indicies.Zip(flipflop, (f, s) => targetAddress[f] = s).ToArray();
+
+                    Addresses.AddOrOverwrite(new string(targetAddress).FromBinary(), targetValue);
+                }
             }
 
             public long Execute(IEnumerable<Instruction> instructions)
@@ -103,8 +138,11 @@ namespace AdventOfCode.Days
                         case BitType.Mask:
                             ParseMask(instruction.BinaryValue);
                             break;
-                        case BitType.Mem:
+                        case BitType.Mem when !_includeXMask:
                             MaskValue(instruction);
+                            break;
+                        case BitType.Mem when _includeXMask:
+                            MaskFloatingValue(instruction);
                             break;
                     }
                 }
@@ -115,7 +153,7 @@ namespace AdventOfCode.Days
         private struct Instruction
         {
             public BitType BitType { get; set; }
-            public int Address { get; set; }
+            public long Address { get; set; }
             public string BinaryValue { get; set; }
             public long Value { get; set; }
         }
