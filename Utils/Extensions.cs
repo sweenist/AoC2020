@@ -95,6 +95,11 @@ namespace AdventOfCode.Utils
             return source.Select(c => isChar(c));
         }
 
+        public static void AddKvp<T1, T2>(this Dictionary<T1, T2> dictionary, KeyValuePair<T1, T2> pair)
+        {
+            dictionary.Add(pair.Key, pair.Value);
+        }
+
         public static void AddOrOverwrite<T1, T2>(this IDictionary<T1, T2> dictionary, T1 key, T2 value)
         {
             if (dictionary.ContainsKey(key))
