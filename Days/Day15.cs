@@ -2,16 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using static AdventOfCode.Utils.Extensions;
-using static AdventOfCode.Utils.BinaryExtensions;
-using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Days
 {
     public static class Day15
     {
-        private static readonly int[] _sampleInput = new int[] { 0, 3, 6 };
-        private static readonly int[] _input = new[] { 1, 2, 16, 19, 18, 0 };
+        private static List<long> _sampleInput = new long[] { 0, 3, 6 }.ToList();
+        private static List<long> _input = new[] { 1L, 2, 16, 19, 18, 0 }.ToList();
         public static void Run()
         {
             Problem1();
@@ -20,10 +17,38 @@ namespace AdventOfCode.Days
 
         private static void Problem1()
         {
+            var r = Algorithm1(_sampleInput, 2020);
+            r[3].Should().Be(0);
+            r[4].Should().Be(3);
+            r[5].Should().Be(3);
+            r[6].Should().Be(1);
+            r[7].Should().Be(0);
+            r[8].Should().Be(4);
+            r[9].Should().Be(0);
+            r[2019].Should().Be(436);
+            Algorithm1(new[] { 1L, 3, 2 }.ToList(), 2020)[2019].Should().Be(1);
+            Algorithm1(new[] { 2L, 1, 3 }.ToList(), 2020)[2019].Should().Be(10);
+            Algorithm1(new[] { 1L, 2, 3 }.ToList(), 2020)[2019].Should().Be(27);
+            Algorithm1(new[] { 2L, 3, 1 }.ToList(), 2020)[2019].Should().Be(78);
+            Algorithm1(new[] { 3L, 2, 1 }.ToList(), 2020)[2019].Should().Be(438);
+            Algorithm1(new[] { 3L, 1, 2 }.ToList(), 2020)[2019].Should().Be(1836);
+
+            var result = Algorithm1(_input,2020);
+            Console.WriteLine($"The position at 2020 is {result.Last()}.");
         }
 
         private static void Problem2()
         {
+        }
+
+        private static List<long> Algorithm1(List<long> nums, long maxCount)
+        {
+            for (var i = nums.Count - 1; i < maxCount - 1; ++i)
+            {
+                var spaceBetweenRepeatOfLastNumber = nums.LastIndexOf(nums[i]) - nums.LastIndexOf(nums[i], i - 1);
+                nums.Add(nums.Count(n => n == nums[i]) > 1 ? spaceBetweenRepeatOfLastNumber : 0);
+            }
+            return nums;
         }
     }
 }
