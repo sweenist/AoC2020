@@ -57,6 +57,15 @@ namespace AdventOfCode.Utils
             }
         }
 
+        public static IEnumerable<T> Act<T>(this IEnumerable<T> source, Action<T> action)
+        {
+            foreach (var t in source)
+            {
+                action(t);
+                yield return t;
+            }
+        }
+
         public static string LoadInput(Type dayClass)
         {
             var className = dayClass.Name;
