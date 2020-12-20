@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using AdventOfCode.Utils;
 using FluentAssertions;
@@ -31,19 +30,22 @@ namespace AdventOfCode.Days
 
         private static void Problem2()
         {
+            Parsinate(_sampleInput, true).Should().Be(46 + 1445 + 669060 + 23340);
+            var result = Parsinate(_input, true);
+            Console.WriteLine($"Sum of unprecendented maths is {result}");
         }
 
-        private static long Parsinate(string[] expressions)
+        private static long Parsinate(string[] expressions, bool useBackwardsPrecedence = false)
         {
             var returnValue = 0L;
             foreach (var expression in expressions)
             {
-                returnValue += ParseExpression(expression);
+                returnValue += ParseExpression(expression, useBackwardsPrecedence);
             }
             return returnValue;
         }
 
-        private static long ParseExpression(string expression)
+        private static long ParseExpression(string expression, bool useBackwardsPrecedence)
         {
             var availableKeys = Enumerable.Range(65, 26).Concat(Enumerable.Range(97, 26)).Select(i => (char)i).ToArray();
             var maskedValues = new Dictionary<char, long>();
@@ -59,7 +61,10 @@ namespace AdventOfCode.Days
                 {
                     try
                     {
-                        var substring = replacementCopy.Substring(1, 3);
+                        var additionIndex = replacementCopy.IndexOf('+') - 1;
+                        var substring = useBackwardsPrecedence && additionIndex > 0
+                            ? replacementCopy.Substring(additionIndex, 3)
+                            : replacementCopy.Substring(1, 3);
                         var maths = new Equation(substring[0], substring[1], substring[2], maskedValues);
 
                         keyIndex++;
@@ -84,7 +89,10 @@ namespace AdventOfCode.Days
             {
                 for (var i = 0; i < expression.Count(c => c == '*' || c == '+'); ++i)
                 {
-                    var substring = expression.Substring(0, 3);
+                    var additionIndex = expression.IndexOf('+') - 1;
+                    var substring = useBackwardsPrecedence && additionIndex >= 0
+                        ? expression.Substring(additionIndex, 3)
+                        : expression.Substring(0, 3);
                     var maths = new Equation(substring[0], substring[1], substring[2], maskedValues);
 
                     keyIndex++;
