@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Utils
 {
@@ -47,6 +48,13 @@ namespace AdventOfCode.Utils
         public static string Repeat(this char value, int repeatCount)
         {
             return String.Concat(Enumerable.Repeat(value, repeatCount));
+        }
+        public static string ReplaceFirst(this string text, string search, string replace)
+        {
+            var position = text.IndexOf(search);
+            return position < 0
+                ? text
+                : text.Substring(0, position) + replace + text.Substring(position + search.Length);
         }
 
         public static IEnumerable<T> Enumerate<T>(this IEnumerator<T> source)
