@@ -14,5 +14,11 @@ namespace AdventOfCode.Utils
         {
             return Convert.ToInt32(group[key].Value);
         }
+
+        public static bool Matches(this string value, string pattern)
+        {
+            var r = new Regex(pattern);
+            return r.Match(value).Success;
+        }
     }
 }
