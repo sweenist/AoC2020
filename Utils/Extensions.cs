@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 namespace AdventOfCode.Utils
 {
@@ -65,15 +64,6 @@ namespace AdventOfCode.Utils
             }
         }
 
-        public static IEnumerable<T> Act<T>(this IEnumerable<T> source, Action<T> action)
-        {
-            foreach (var t in source)
-            {
-                action(t);
-                yield return t;
-            }
-        }
-
         public static string LoadInput(Type dayClass)
         {
             var className = dayClass.Name;
@@ -97,34 +87,16 @@ namespace AdventOfCode.Utils
         {
             if (source.Contains(Environment.NewLine))
                 return source.Split(Environment.NewLine).Select(s => Convert.ToInt64(s)).ToArray();
-            return source.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Select(s => Convert.ToInt64(s)).ToArray();
+            return source.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+                         .Select(s => Convert.ToInt64(s)).ToArray();
         }
 
         public static int[] ToInt32(this string source)
         {
             if (source.Contains(Environment.NewLine))
                 return source.Split(Environment.NewLine).Select(s => Convert.ToInt32(s)).ToArray();
-            return source.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).Select(s => Convert.ToInt32(s)).ToArray();
-        }
-
-        public static IEnumerable<bool> CharToBool(this IEnumerable<char> source, Func<char, bool> isChar)
-        {
-            return source.Select(c => isChar(c));
-        }
-
-        public static void AddKvp<T1, T2>(this Dictionary<T1, T2> dictionary, KeyValuePair<T1, T2> pair)
-        {
-            dictionary.Add(pair.Key, pair.Value);
-        }
-
-        public static void AddOrOverwrite<T1, T2>(this IDictionary<T1, T2> dictionary, T1 key, T2 value)
-        {
-            if (dictionary.ContainsKey(key))
-            {
-                dictionary[key] = value;
-                return;
-            }
-            dictionary.Add(key, value);
+            return source.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
+                         .Select(s => Convert.ToInt32(s)).ToArray();
         }
 
         public static T ElapsedAction<T>(Func<T> action, string actionString = "Action")

@@ -5,6 +5,7 @@ using FluentAssertions;
 using static AdventOfCode.Utils.Extensions;
 using static AdventOfCode.Utils.BinaryExtensions;
 using System.Text.RegularExpressions;
+using AdventOfCode.Utils;
 
 namespace AdventOfCode.Days
 {

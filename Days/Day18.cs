@@ -59,23 +59,15 @@ namespace AdventOfCode.Days
                 var replacementCopy = rawValue;
                 for (var i = 0; i < rawValue.Count(c => c == '*' || c == '+'); ++i)
                 {
-                    try
-                    {
-                        var additionIndex = replacementCopy.IndexOf('+') - 1;
-                        var substring = useBackwardsPrecedence && additionIndex > 0
-                            ? replacementCopy.Substring(additionIndex, 3)
-                            : replacementCopy.Substring(1, 3);
-                        var maths = new Equation(substring[0], substring[1], substring[2], maskedValues);
+                    var additionIndex = replacementCopy.IndexOf('+') - 1;
+                    var substring = useBackwardsPrecedence && additionIndex > 0
+                        ? replacementCopy.Substring(additionIndex, 3)
+                        : replacementCopy.Substring(1, 3);
+                    var maths = new Equation(substring[0], substring[1], substring[2], maskedValues);
 
-                        keyIndex++;
-                        maskedValues[availableKeys[keyIndex]] = maths.Result;
-                        replacementCopy = replacementCopy.ReplaceFirst(substring, availableKeys[keyIndex].ToString());
-                    }
-                    catch (ArgumentOutOfRangeException e)
-                    {
-                        Console.WriteLine($"Uh-oh, {rawValue} or {replacementCopy} is malformed");
-                        throw e;
-                    }
+                    keyIndex++;
+                    maskedValues[availableKeys[keyIndex]] = maths.Result;
+                    replacementCopy = replacementCopy.ReplaceFirst(substring, availableKeys[keyIndex].ToString());
                 }
 
                 expression = expression.Replace(rawValue, availableKeys[keyIndex].ToString());
