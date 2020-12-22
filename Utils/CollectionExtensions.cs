@@ -11,6 +11,14 @@ namespace AdventOfCode.Utils
             return source.Select(c => isChar(c));
         }
 
+        public static IEnumerable<T> SkipEnds<T>(this IEnumerable<T> source)
+        {
+            var length = source.Count() - 2;
+            if(length < 0)
+                return source;
+            return source.Skip(1).Take(length);
+        }
+
         public static void AddKvp<T1, T2>(this Dictionary<T1, T2> dictionary, KeyValuePair<T1, T2> pair)
         {
             dictionary.Add(pair.Key, pair.Value);
@@ -25,7 +33,7 @@ namespace AdventOfCode.Utils
             }
             dictionary.Add(key, value);
         }
-        
+
         public static IEnumerable<IEnumerable<T>> CartesianProduct<T>(this IEnumerable<IEnumerable<T>> sequences)
         {
             IEnumerable<IEnumerable<T>> result = new[] { Enumerable.Empty<T>() };

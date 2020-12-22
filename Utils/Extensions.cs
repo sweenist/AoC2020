@@ -83,6 +83,14 @@ namespace AdventOfCode.Utils
             return source.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
         }
 
+        public static string[] SplitEvery(this string source, int stringLength)
+        {
+            return source.Select((c, i) => new { c, i })
+                         .GroupBy(g => g.i / stringLength)
+                         .Select(g => string.Join(string.Empty, g.Select(x => x.c)))
+                         .ToArray();
+        }
+
         public static long[] ToInt64(this string source)
         {
             if (source.Contains(Environment.NewLine))

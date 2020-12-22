@@ -6,7 +6,7 @@ namespace AdventOfCode2020
     {
         static void Main(string[] args)
         {
-            Day19.Run();
+            Day19b.Run();
         }
     }
 }
