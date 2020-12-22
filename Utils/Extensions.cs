@@ -76,11 +76,11 @@ namespace AdventOfCode.Utils
             return File.ReadAllText($"Days/Samples/{className}.txt");
         }
 
-        public static string[] ToLines(this string source)
+        public static string[] ToLines(this string source, StringSplitOptions options = StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
         {
             if (source.Contains(Environment.NewLine))
-                return source.Split(Environment.NewLine, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-            return source.Split('\n', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+                return source.Split(Environment.NewLine, options);
+            return source.Split('\n', options);
         }
 
         public static string[] SplitEvery(this string source, int stringLength)
