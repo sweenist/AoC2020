@@ -41,7 +41,7 @@ namespace AdventOfCode.Days
 
         private static long SolveCorners(List<Tile> tiles)
         {
-            var cornerTilesMaybe = tiles.Where(t => t.MatchedEdges.Count == 4);
+            var cornerTilesMaybe = tiles.Where(t => t.IsCorner);
             return tiles.Where(t => t.MatchedEdges.Count == 4).Aggregate(1L, (f, s) => f * s.Id);
         }
 
@@ -94,6 +94,8 @@ namespace AdventOfCode.Days
 
             public List<KeyValuePair<int, string>> MatchedEdges { get; } = new List<KeyValuePair<int, string>>();
 
+            public bool IsCorner => MatchedEdges.Count.Equals(4);
+            public bool IsEdge => MatchedEdges.Count.Equals(6);
             public void Rotate() { }
             public void Flip() { }
 
