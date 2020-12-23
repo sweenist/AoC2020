@@ -23,8 +23,14 @@ namespace AdventOfCode.Days
 
         private static void Problem1()
         {
-            SolveCorners(_sampleInput).Should().Be(20899048083289);
-            var result = SolveCorners(_input);
+            var sampleTiles = ParseTiles(_sampleInput);
+            MatchEdges(sampleTiles);
+            SolveCorners(sampleTiles).Should().Be(20899048083289);
+
+            var tiles = ParseTiles(_input);
+            MatchEdges(tiles);
+            var result = SolveCorners(tiles);
+
             Console.WriteLine($"Corner math is {result}");
         }
 
@@ -33,15 +39,17 @@ namespace AdventOfCode.Days
 
         }
 
-        private static long SolveCorners(string[] input)
+        private static long SolveCorners(List<Tile> tiles)
         {
-            var tiles = ParseTiles(input);
+            var cornerTilesMaybe = tiles.Where(t => t.MatchedEdges.Count == 4);
+            return tiles.Where(t => t.MatchedEdges.Count == 4).Aggregate(1L, (f, s) => f * s.Id);
+        }
+
+        private static void MatchEdges(List<Tile> tiles)
+        {
             for (var i = 0; i < tiles.Count; ++i)
                 for (var j = i + 1; j < tiles.Count; ++j)
                     tiles[i].Match(tiles[j]);
-
-            var cornerTilesMaybe = tiles.Where(t => t.MatchedEdges.Count == 4);
-            return tiles.Where(t => t.MatchedEdges.Count == 4).Aggregate(1L, (f, s) => f * s.Id);
         }
 
         private static List<Tile> ParseTiles(string[] input)
@@ -51,16 +59,18 @@ namespace AdventOfCode.Days
             var returnValue = new List<Tile>();
             while (index < input.Length)
             {
-                // Console.WriteLine($"Index {index} {input[index]}");
-
+                // Id
                 var id = Convert.ToInt32(tileRegex.Match(input[index]).Groups["id"].Value);
                 index++;
+
+                // Picture Data
                 var tileInfo = input.Skip(index)
                                     .TakeWhile(s =>
                                     {
                                         index++;
                                         return !string.IsNullOrWhiteSpace(s);
                                     }).ToList();
+
                 returnValue.Add(new Tile(id, tileInfo));
             }
 
