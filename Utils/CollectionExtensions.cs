@@ -14,7 +14,7 @@ namespace AdventOfCode.Utils
         public static IEnumerable<T> SkipEnds<T>(this IEnumerable<T> source)
         {
             var length = source.Count() - 2;
-            if(length < 0)
+            if (length < 0)
                 return source;
             return source.Skip(1).Take(length);
         }
@@ -45,6 +45,24 @@ namespace AdventOfCode.Utils
                   select seq.Concat(new[] { item });
             }
             return result;
+        }
+
+        public static void Rotate<T>(this List<List<T>> matrix)
+        {
+            T tmp = default;
+            var n = matrix.Count;
+            if (n != matrix.First().Count)
+                throw new InvalidOperationException("Rotation algorithm will only work on square sets");
+
+            for (int i = 0; i < n / 2; i++)
+                for (int j = i; j < n - i - 1; j++)
+                {
+                    tmp = matrix[i][j];
+                    matrix[i][j] = matrix[j][n - i - 1];
+                    matrix[j][n - i - 1] = matrix[n - i - 1][n - j - 1];
+                    matrix[n - i - 1][n - j - 1] = matrix[n - j - 1][i];
+                    matrix[n - j - 1][i] = tmp;
+                }
         }
     }
 }
